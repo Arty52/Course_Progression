@@ -105,7 +105,9 @@ def generate_grades(classes):
         # List of dictionaries (grades)
         course_distributions.append(grades)
 
-    grades_df = pd.DataFrame({'A+' : [len(grade['A+']) for grade in course_distributions],
+    print(len([course for course in cs_courses.keys()]))
+    grades_df = pd.DataFrame({'Course' : [course for course in cs_courses.keys()],
+                              'A+' : [len(grade['A+']) for grade in course_distributions],
                               'A'  : [len(grade['A']) for grade in course_distributions],
                               'A-' : [len(grade['A-']) for grade in course_distributions],
                               'B+' : [len(grade['B+']) for grade in course_distributions],
@@ -117,10 +119,11 @@ def generate_grades(classes):
                               'D+' : [len(grade['D+']) for grade in course_distributions],
                               'D'  : [len(grade['D']) for grade in course_distributions],
                               'F'  : [len(grade['F']) for grade in course_distributions]})
-
+    
+    grades_df = grades_df[['Course', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F']]
     grades_df.to_csv('grades_dataset.csv')
 
-classes = 100
+classes = 45 # 44 classes are currently offered
 generate_grades(classes)
 
 students = 1000
@@ -129,8 +132,8 @@ df = pd.DataFrame({'Current Courses' : [sample for sample in generate_samples(st
                    'Wanted Courses'  : [sample for sample in generate_samples(students)]})
 
 # Show directory top and bottom of directory
-print("* df.head()", df.head(), sep="\n", end="\n\n")
-print("* df.tail()", df.tail(), sep="\n", end="\n\n")
+# print("* df.head()", df.head(), sep="\n", end="\n\n")
+# print("* df.tail()", df.tail(), sep="\n", end="\n\n")
 
 # Save to current directory
 df.to_csv('dataset.csv')

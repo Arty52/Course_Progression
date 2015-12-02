@@ -24,6 +24,10 @@ def read_csv_dataset(file_handle):
     
     return df
 
+def compute_course_success(df):
+    passing = list(df.columns[:9])
+    print(passing)
+
 def main():
     df_students = read_csv_dataset('dataset.csv')
     df_grades = read_csv_dataset('grades_dataset.csv')
@@ -34,6 +38,8 @@ def main():
     
     print("* df_grades.head()", df_grades.head(), sep="\n", end="\n\n")
     print("* df_grades.tail()", df_grades.tail(), sep="\n", end="\n\n")
+    
+    compute_course_success(df_grades)
     
 if __name__ == '__main__':
     Dataset_Generator       # Generate Data (not needed if dataset.csv/grades_dataset.csv exist)
