@@ -65,28 +65,28 @@ def generate_samples(amount):
     samples = []
     
     # select a random course load for each student
-    for i in range(0, amount):
+    for i in range(amount):
         samples.append(random.sample(cs_courses.keys(), generate_random_course_amount()))
 
     return samples
 
-def generate_grades(classes):
+def assign_grades(classes):
     course_distributions = []
     
-    for i in range(0, classes):
-        mu, sigma = 80, 10 # mean and standard deviation
+    for i in range(classes):
+        mu, sigma = 75, 10 # mean and standard deviation
         s = np.random.normal(mu, sigma, 100) # create random normal distribution
 
         count, bins, ignored = plt.hist(s, 12, normed=True)
 
-        # Plot probability density function (red line)
-        if i==0:
-            plt.plot(bins, 1/(sigma * np.sqrt(2 * np.pi)) *
-                            np.exp( - (bins - mu) ** 2 / (2 * sigma**2) ),
-                            linewidth=2, color='r')
-
-            plt.title('Grade distribution')
-            plt.show()
+        # # Plot probability density function (red line)
+        # if i==0:
+        #     plt.plot(bins, 1/(sigma * np.sqrt(2*np.pi)) *
+        #                     np.exp( - (bins-mu) ** 2 / (2*sigma**2) ),
+        #                     linewidth=2, color='r')
+        #
+        #     plt.title('Grade distribution')
+        #     plt.show()
 
         # Dictionary containing grade from distribution
         grades = {'A+' : [grade for grade in s if grade >= 97],
@@ -105,35 +105,44 @@ def generate_grades(classes):
         # List of dictionaries (grades)
         course_distributions.append(grades)
 
-    print(len([course for course in cs_courses.keys()]))
+    # print(len([course for course in cs_courses.keys()]))
     grades_df = pd.DataFrame({'Course' : [course for course in cs_courses.keys()],
                               'A+' : [len(grade['A+']) for grade in course_distributions],
-                              'A'  : [len(grade['A']) for grade in course_distributions],
+                              'A'  : [len(grade['A'])  for grade in course_distributions],
                               'A-' : [len(grade['A-']) for grade in course_distributions],
                               'B+' : [len(grade['B+']) for grade in course_distributions],
-                              'B'  : [len(grade['B']) for grade in course_distributions],
+                              'B'  : [len(grade['B'])  for grade in course_distributions],
                               'B-' : [len(grade['B-']) for grade in course_distributions],
                               'C+' : [len(grade['C+']) for grade in course_distributions],
-                              'C'  : [len(grade['C']) for grade in course_distributions],
+                              'C'  : [len(grade['C'])  for grade in course_distributions],
                               'C-' : [len(grade['C-']) for grade in course_distributions],
                               'D+' : [len(grade['D+']) for grade in course_distributions],
-                              'D'  : [len(grade['D']) for grade in course_distributions],
-                              'F'  : [len(grade['F']) for grade in course_distributions]})
+                              'D'  : [len(grade['D'])  for grade in course_distributions],
+                              'F'  : [len(grade['F'])  for grade in course_distributions]})
     
+    # Sort columns in correct order
     grades_df = grades_df[['Course', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'F']]
-    grades_df.to_csv('grades_dataset.csv')
 
-classes = 45 # 44 classes are currently offered
-generate_grades(classes)
+    return grades_df
 
-students = 1000
+def generate_grades(amt_of_records):
+    classes = 45 # 44 classes are currently offered, a grade distribution is generated for each course
+    grade_dfs = []
 
-df = pd.DataFrame({'Current Courses' : [sample for sample in generate_samples(students)],
-                   'Wanted Courses'  : [sample for sample in generate_samples(students)]})
+    for i in range(int(amt_of_records)):
+        grade_dfs.append(assign_grades(classes))
+
+        # Write data to file
+        grade_dfs[i].to_csv('grades_dataset{}.csv'.format(i))
+    return grade_dfs
+
+def generate_demand(students=1000):
+    df = pd.DataFrame({'Current Courses' : [sample for sample in generate_samples(students)],
+                       'Wanted Courses'  : [sample for sample in generate_samples(students)]})
 
 # Show directory top and bottom of directory
 # print("* df.head()", df.head(), sep="\n", end="\n\n")
 # print("* df.tail()", df.tail(), sep="\n", end="\n\n")
 
 # Save to current directory
-df.to_csv('dataset.csv')
+    df.to_csv('demand_data.csv')
