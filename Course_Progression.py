@@ -69,6 +69,7 @@ def forecast_enrollment(dfs_grades, df_demand):
     df_forecast = pd.DataFrame({'course number' : [x for x in dg.cs_courses.keys()],
                                'course name'   : [x for x in dg.cs_courses.values()] })
 
+    # add the column from df_course which contains the amount of students currently enrolled in each course
     df_forecast['enrolled'] = df_courses['current']
     # multiply course pass rate by number currently enrolled and round to nearest whole number
     df_forecast['passing'] = df_courses['current'].multiply(\
@@ -153,7 +154,7 @@ def main():
     # Dictionary containing menu items
     menu = {'1':'Generate or Load course grades.',
             '2':'Generate or Load student demand.',
-            '3':'Compute course demand.',
+            '3':'Forecast Enrollment.',
             '4':'Exit'}
     # Sort dictionary in correct order
     menu = collections.OrderedDict(sorted(menu.items()))
