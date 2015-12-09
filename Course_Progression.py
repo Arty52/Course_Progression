@@ -63,9 +63,26 @@ def forecast_enrollment(dfs_grades, df_demand):
     df_grade_stats = grade_progression(dfs_grades)
 
     # compute student demand
-    student_demand(df_demand)
+    df_courses = student_demand(df_demand)
 
     # forecast enrollment
+    df_forecast = pd.DataFrame({'course number' : [x for x in dg.cs_courses.keys()],
+                               'course name'   : [x for x in dg.cs_courses.values()] })
+
+    df_forecast['enrolled'] = df_courses['current']
+    # multiply course pass rate by number currently enrolled and round to nearest whole number
+    df_forecast['passing'] = df_courses['current'].multiply(\
+                             df_grade_stats['Success Ratio'], axis='index').round()
+    df_forecast['demand'] = df_courses['wanted']
+
+    df_forecast.sort_values(by='course number', inplace=True)
+
+    # output top and bottom of DataFrame to user
+    print("* df_forecast.head()", df_forecast.head(), sep="\n", end="\n\n")
+    print("* df_forecast.tail()", df_forecast.tail(), sep="\n", end="\n\n")
+
+    # save dataframe to directory
+    df_forecast.to_csv('forecast.csv')
 
 def student_demand(df):
     # create new DataFrame which holds all courses
@@ -184,6 +201,7 @@ def main():
             else:
                 print()
                 forecast_enrollment(list_df_grades, df_demand)
+                print("\nFile has been saved to 'forecast.csv' in the working directory")
                 print()
 
         # Exit
