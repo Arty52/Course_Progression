@@ -68,8 +68,33 @@ def forecast_enrollment(dfs_grades, df_demand):
     # forecast enrollment
 
 def student_demand(df):
-    print(df.head())
-    print(df.tail())
+    # create new DataFrame which holds all courses
+    df_course = pd.DataFrame({'course number' : [x for x in dg.cs_courses.keys()],
+                              'course name'   : [x for x in dg.cs_courses.values()] })
+
+    # extract current course list
+    current_courses = df['Current Courses'].tolist()
+    # extract wanted course list
+    wanted_courses = df['Wanted Courses'].tolist()
+
+    # count number of students currently taking each course
+    courses = []
+    for course in dg.cs_courses.keys():
+        # create tuple of (course number, current course sum, wanted course sum)
+        courses.append((course, 
+                       sum([x.count(course) for x in current_courses]),
+                       sum([x.count(course) for x in wanted_courses])))
+
+    # append number of students currently taking a course to df
+    df_course['current'] = [x[1] for x in courses]
+    # append number of students wanting to take a course to df
+    df_course['wanted'] = [x[2] for x in courses]
+    
+    # save stats to directory
+    df_course.to_csv('student_stats.csv')
+    
+    # return demand df
+    return df_course
 
 def grade_progression(dfs_grades):
     # create Pandas DataFrame to hold grade statistics
