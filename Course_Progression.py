@@ -108,6 +108,11 @@ def student_demand(df):
     # append number of students wanting to take a course to df
     df_course['wanted'] = [x[2] for x in courses]
     
+    ''' Alternate way of performing two lines above
+    for x in courses:
+        df_course['current'], df_course['wanted'] = x[1:3]
+    '''
+    
     # save stats to directory
     df_course.to_csv('student_stats.csv')
     
@@ -127,6 +132,7 @@ def grade_progression(dfs_grades):
 
         # append passing grades from df to df_grade_stats
         df_grade_stats['Passing {}'.format(i)] = df[passing_grades].sum(axis=1)  # axis=1 is sum across columns
+        #df_grade_stats['Passing' + str(i)]
         # append total grades assigned from df to df_grade_stats
         df_grade_stats['Total {}'.format(i)] = df[all_grades].sum(axis=1)
 
@@ -173,10 +179,10 @@ def main():
         for key, value in menu.items(): 
             print(key, value)
 
-        selection = input('Please Select: ') 
+        selection = int(input('Please Select: ')) 
 
         # Load/Generate Grades
-        if selection == '1': 
+        if selection == 1: 
             try:
                 print()
                 list_df_grades = handle_grades()
@@ -186,7 +192,7 @@ def main():
                 print('Grades were not loaded successfully.\n')
 
         # Load/Generate Demand
-        elif selection == '2': 
+        elif selection == 2: 
             try:
                 print()
                 df_demand = handle_demand()
@@ -196,7 +202,7 @@ def main():
                 print('Demand was not loaded successfully.\n')
 
         # Forecast Enrollment
-        elif selection == '3':
+        elif selection == 3:
             if grades_loaded == False or demand_loaded == False:
                 print('\nMust use option 1 and 2 to load grades/demand before option 3 is possible.\n')
             else:
@@ -206,7 +212,7 @@ def main():
                 print()
 
         # Exit
-        elif selection == '4':
+        elif selection == 4:
             print('\n\nGoodbye!')
             break
 
