@@ -13,6 +13,8 @@
 
 \maketitle	
 
+\newpage
+
 %==================== Introduction ====================
 
 \section*{Introduction}
@@ -52,6 +54,69 @@ More recently, a lecture from University of Missouri-Columbia in 2010 by Felts a
 presented an approach which considers a ratio of student demand for a course to the total students in the 
 available population. They use the historical calculated student demand correlation value and apply it to the 
 new student population. The output is the new predicted student demand. 
+
+%==================== Approaches ====================
+
+\section*{Approaches}
+There were multiple approaches considered for this project. Two approaches dominated early discussions
+regarding the project before the model discussed in this paper was chosen. A graphic model offered a 
+macro approach to the data and variables considered in this research. Alternatively, a micro view was 
+considered, studying individual student records and deciding the likely courses that student would take.
+
+\subsection*{Graphic Model}
+The department of Computer Science
+at Cal State Fullerton offers it's students a list of all courses needed to graduate with a Bachelor of 
+Science in Computer Science. Along with the list of courses, a prerequisite tree, seen in Figure \ref{fig:fig4} 
+ is also provided demonstrating how courses interact with one another. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.45]{CS_general_courses}
+    \caption{Major Prerequisite Tree}
+    \label{fig:fig4}
+\end{figure}
+
+The graphic structure of the tree suggests that perhaps a similar structure can be used to forecast student
+enrollment. A Bayesian network was considered for the implementation of this project. A Bayesian network 
+uses the conditional dependency between nodes and applies probability to determine how variables
+(e.g. students) propagate through the model. A Bayesian network's edges must form a directed acyclic 
+graph (DAG) \cite{needham2007primer}. In the case of the project, nodes would represent the courses a 
+student can take and the progression of students from course to course would be computed based on the 
+probability that a student is to take one course after taking another. 
+
+As a more concrete example, lets consider the major prerequisite tree in Figure \ref{fig:fig4}. Here, we 
+see that there is a DAG structure. Therefore, we may be able to apply a Bayesian network. Consider the 
+propagation of students from CPSC 121 to CPSC 131. There are 4 possibilities for a student enrolled in 
+CPSC 121. A student may fail the course thereby having to retake the course. This would mean that the 
+student would propagate from a CPSC 121 node to another CPSC 121 node. Another outcome could be 
+that the student passes the course and moves on to CPSC 131. The model may also experience some 
+attrition due to a student taking a course and not taking any other courses the following semester. These
+three outcomes can be trained and fit the Bayesian network model. 
+
+However, the DAG structure does 
+becomes problematic when we propagate past the CPSC 131 node. This is because in a directed 
+model, once a student moves from the CPSC 131 node to it's child nodes, assuming the student doesn't 
+take all possible child nodes, the student can only propagate downwards in the graph, omitting other courses
+not connected to the path chosen. This may be more evident in an example. Once again looking at Figure 
+\ref{fig:fig4}, consider that a student passes the CPSC 131 course and moves on to take CPSC 240, 
+CPSC 223, and CPSC 332. In a DAG, once the student propagates to these nodes, they may not go 
+back up to the CPSC 131 node and propagate downward again to take CPSC 254 and CPSC 311. In 
+a Bayesian network, we can compute the probability that the student takes any or all of these courses, 
+however we cannot consider when a student may go back and take other courses they may not have chosen.
+
+To fix the problem we experience in our Bayesian network, we would have to compute all possible sets of 
+courses a student may take as they travel down each path. Here, the problem becomes the ability to process
+and interpret data with a branching factor that is factorial. Therefore, this option was reconsidered and 
+other options were discussed.
+
+\subsection*{Individual Student Approach}
+Another model that was considered was to examine each individual student record and determine what courses
+they were likely to take based on what courses they have taken. The limitations with this approach were not 
+computational. Due to the obvious privacy concerns, student data would need to be void of any student information
+that could reveal the students identity. Also, student data would need to be gathered which means that 
+forms would need to be submitted to the institutional review board (IRB) to approve research of human subjects. 
+The aggregation of student data and the approval from IRB lead to this approach being reconsidered though
+it may be worth pursuing when time permits. 
 
 %==================== Methods ====================
 
@@ -132,7 +197,7 @@ grade distribution as would be seen in practice. A data frame created from the d
 texttt{generate\_grades()} method. The data frame is saved for record and the loop continues. Once the needed 
 amount of records is created the list of data frames is returned to the caller.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[scale=0.50]{GradeDistribution}
     \caption{Grade Distribution For A Course}

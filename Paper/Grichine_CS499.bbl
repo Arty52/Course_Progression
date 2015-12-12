@@ -10,4 +10,9 @@ Christine~R Kraft and James~P Jarvis.
 \newblock An adaptive model for predicting course enrollment.
 \newblock Technical report, Technical Report, 2005.
 
+\bibitem{needham2007primer}
+Chris~J Needham, James~R Bradford, Andrew~J Bulpitt, and David~R Westhead.
+\newblock A primer on learning in bayesian networks for computational biology.
+\newblock {\em PLoS Comput Biol}, 3(8):e129, 2007.
+
 \end{thebibliography}
